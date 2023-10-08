@@ -1,24 +1,12 @@
-package pro.sky.hogwarts.entity;
+package pro.sky.hogwarts.dto;
 
-import jakarta.persistence.*;
-
-@Entity
-public class Avatar {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AvatarDto {
     private Long id;
+
     private String filePath;
     private long fileSize;
     private String mediaType;
-    @Lob
-    private byte[] data;
-
-    @OneToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
-
-    public Avatar() {
-    }
+    private  String avatarUrl;
 
     public Long getId() {
         return id;
@@ -52,19 +40,11 @@ public class Avatar {
         this.mediaType = mediaType;
     }
 
-    public byte[] getData() {
-        return data;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

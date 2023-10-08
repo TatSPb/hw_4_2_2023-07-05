@@ -30,7 +30,7 @@ public class FacultyController {
         return facultyService.update(id, facultyDtoIn);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{facultyId}")
     public FacultyDtoOut get(@PathVariable("id") long id) {
         return facultyService.get(id);
     }

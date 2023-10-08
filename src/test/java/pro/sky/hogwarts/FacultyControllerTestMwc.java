@@ -1,28 +1,27 @@
-package pro.sky.hogwarts.controller;
+package pro.sky.hogwarts;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.Times;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import pro.sky.hogwarts.controller.FacultyController;
 import pro.sky.hogwarts.dto.*;
 import pro.sky.hogwarts.entity.*;
 import pro.sky.hogwarts.mapper.*;
 import pro.sky.hogwarts.repository.*;
 import pro.sky.hogwarts.service.*;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,11 +33,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@WebMvcTest(controllers = FacultyController.class) // проходит только со 2го раза?
-//SpringBootTest
-//AutoConfigureMockMvc
-public class FacultyControllerTest {
-
+@WebMvcTest(controllers = FacultyController.class)
+public class FacultyControllerTestMwc {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -47,19 +43,30 @@ public class FacultyControllerTest {
     private StudentRepository studentRepository;
 
     @SpyBean
-    private FacultyService facultyService; //WebMvcTest
+    private FacultyService facultyService;
     @SpyBean
-    private FacultyMapper facultyMapper; //WebMvcTest
+    private FacultyMapper facultyMapper;
     @SpyBean
-    private StudentMapper studentMapper; //WebMvcTest
-
-//    @Autowired
-//    private FacultyMapper facultyMapper; //SpringBootTest
+    private StudentMapper studentMapper;
+    @SpyBean
+    private AvatarMapper avatarMapper;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     private final Faker faker = new Faker();
+
+    @BeforeEach
+    public void beforeEach() {
+        facultyRepository = mock(FacultyRepository.class);
+        FacultyMapper facultyMapper = new FacultyMapper();
+        AvatarMapper avatarMapper = new AvatarMapper(null);
+        facultyService = new FacultyService(
+                facultyRepository,
+                mock(StudentRepository.class),
+                facultyMapper,
+                new StudentMapper(facultyMapper, facultyRepository, avatarMapper));
+    }
 
     @Test
     public void createTest() throws Exception {
@@ -91,14 +98,9 @@ public class FacultyControllerTest {
     @Test
     public void updateTest() throws Exception {
         FacultyDtoIn facultyDtoIn = generateDto();
-//      Faculty oldFaculty = new Faculty();
-//      oldFaculty.setId(1L);
-//      faculty.setName(faker.harryPotter().house());
-//      faculty.setColor(faker.color().name());
         Faculty oldFaculty = generate(1);
 
         when(facultyRepository.findById(eq(1L))).thenReturn(Optional.of(oldFaculty));
-
         oldFaculty.setName(facultyDtoIn.getName());
         oldFaculty.setColor(facultyDtoIn.getColor());
 
@@ -228,6 +230,7 @@ public class FacultyControllerTest {
                     assertThat(facultyDtoOuts)
                             .isNotNull()
                             .isNotEmpty();
+
                     Stream.iterate(0, index -> index + 1)
                             .limit(facultyDtoOuts.size())
                             .forEach(index -> {

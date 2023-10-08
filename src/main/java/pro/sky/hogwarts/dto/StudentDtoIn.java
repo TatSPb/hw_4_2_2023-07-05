@@ -3,12 +3,12 @@ package pro.sky.hogwarts.dto;
 public class StudentDtoIn {
     private String name;
     private int age;
-    private Long facultyId;
+    private Long id;
 
-    public StudentDtoIn(String name, int age, long facultyId) {
+    public StudentDtoIn(String name, int age, long id) {
         this.name = name;
         this.age = age;
-        this.facultyId = facultyId;
+        this.id = id;
     }
 
     public StudentDtoIn() {
@@ -30,11 +30,11 @@ public class StudentDtoIn {
         this.age = age;
     }
 
-    public Long getFacultyId() {
-        return facultyId;
+    public Long getId() {
+        return id;
     }
 
-    public void setFacultyId(Long facultyId) {
-        this.facultyId = facultyId;
+    public void setId(Long id) {
+        this.id = id;
     }
 }

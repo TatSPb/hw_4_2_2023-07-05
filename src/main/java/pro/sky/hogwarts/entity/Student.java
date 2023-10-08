@@ -1,5 +1,7 @@
 package pro.sky.hogwarts.entity;
 import jakarta.persistence.*;
+import pro.sky.hogwarts.dto.FacultyDtoOut;
+
 @Entity
 @Table(name = "students")
 public class Student {
@@ -8,10 +10,14 @@ public class Student {
     private Long id;
     private String name;
     private int age;
+    private String avatarUrl;
 
     @ManyToOne
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
+
+    @OneToOne(mappedBy = "student")
+    private Avatar avatar;
 
     public Student() {
     }
@@ -52,5 +58,21 @@ public class Student {
 
     public void setFaculty(Faculty faculty) {
         this.faculty = faculty;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 }

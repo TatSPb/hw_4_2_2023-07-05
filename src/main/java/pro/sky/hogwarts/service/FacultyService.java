@@ -76,7 +76,7 @@ public class FacultyService {
     }
 
     public List<StudentDtoOut> findStudents(long id) {
-        return studentRepository.findAllByFaculty_Id(id).stream()
+        return studentRepository.findAllStudentsByFaculty_Id(id).stream()
                 .map(studentMapper::toDto)
                 .collect(Collectors.toList());
     }
